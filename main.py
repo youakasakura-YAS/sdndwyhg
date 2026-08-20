@@ -13,14 +13,10 @@ from core.power_sys import PowerSystem
 from core.player_cover import CoverSystem
 from core.columbia import Columbia
 from core.nuantanota import Nuantanota
-from config import scale_and_crop  # 缩放函数
 
 # ===================== 路径处理 =====================
-BASE_DIR = os.path.dirname(os.path.abspath(sys.executable if getattr(sys, 'frozen', False) else __file__))
-if hasattr(sys, "_MEIPASS"):
-    BASE_DIR = sys._MEIPASS
-KEY_FILE = os.path.join(BASE_DIR, "S1O0.json")
-LOG_FOLDER = os.path.join(BASE_DIR, "log")
+KEY_FILE = os.path.join(INTERNAL_BASE, "S1O0.json")
+LOG_FOLDER = os.path.join(EXE_ROOT, "log")
 REAL_KEY = "kZ5W3XSrF5FMpcx2wjZwwVKFKCtFENpSS8CyFc26H8vcQSYpkFxMkdAV64Zf6HSW"
 
 if not os.path.exists(LOG_FOLDER):
@@ -68,7 +64,7 @@ def cleanup_logs(max_count=10):
         print("清理旧日志失败：", e)
 
 def get_font(size):
-    font_path = os.path.join(BASE_DIR,"sdndwyhg.ttf")
+    font_path = os.path.join(INTERNAL_BASE, "sdndwyhg.ttf")
     if os.path.exists(font_path):
         try:
             return pygame.font.Font(font_path, size)
@@ -132,7 +128,8 @@ for i, path in enumerate(bg_paths):
     except Exception as e:
         print(f"监控背景{i}加载失败：", e)
 
-# ========== 电流音效和跳脸贴图（disable） ==========
+# ========== 电流音效和跳脸图片（disable） ==========
+
 current_hum_sound = None
 jumpscare_img = None
 
@@ -144,7 +141,7 @@ def load_additional_assets():
     except Exception as e:
         print("监控背景声加载失败", e)
     try:
-        jumpscare_img = pygame.image.load("photos/JUMPSCARE.png").convert_alpha()
+        jumpscare_img = pygame.image.load(os.path.join(PHOTOS_ROOT, "JUMPSCARE.png")).convert_alpha()
         jumpscare_img = pygame.transform.scale(jumpscare_img, (SCREEN_WIDTH, SCREEN_HEIGHT))
     except Exception as e:
         print("跳脸贴图加载失败", e)
@@ -177,6 +174,7 @@ repair_progress = 0
 door_broken = False
 
 # 跳脸相关全局变量
+
 jumpscare_active = False
 jumpscare_start_time = 0
 jumpscare_fade_start = 0
@@ -496,7 +494,6 @@ def draw_game(dt):
     if jumpscare_active and jumpscare_img is not None:
         jumpscare_img.set_alpha(jumpscare_fade_alpha)
         screen.blit(jumpscare_img, (0, 0))
-
     # ========== 暂停时 ==========
     if not is_paused:
         cover.update_anim()

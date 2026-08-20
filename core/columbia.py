@@ -26,7 +26,6 @@ class Columbia:
         # 跳脸状态
         self.jumpscare_active = False
         self.jumpscare_start_time = 0
-
         # 怪物贴图尺寸
         self.monster_w = int(140 * MONSTER_SCALE_MONITOR)
         self.monster_h = int(180 * MONSTER_SCALE_MONITOR)
